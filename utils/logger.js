@@ -1,4 +1,5 @@
 const winston = require('winston');
+const { LOGPATH } = require('../config');
 
 const { combine, timestamp, printf } = winston.format;
 
@@ -12,7 +13,7 @@ const logger = winston.createLogger({
     logFileFormat,
   ),
   transports: [
-    new winston.transports.File({ filename: `./logs/${Date.now()}.log` }),
+    new winston.transports.File({ filename: `${LOGPATH}/${Date.now()}.log` }),
   ],
 });
 
