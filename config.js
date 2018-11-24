@@ -1,7 +1,7 @@
 const PORT = 2060;
 
 const DATABASE = {
-  NAME: 'tb-jwt',
+  NAME: 'tb-jwt-dev',
   PORT: 27017,
 };
 
