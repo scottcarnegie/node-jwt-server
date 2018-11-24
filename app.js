@@ -6,7 +6,7 @@ const { DATABASE } = require('./config');
 const logger = require('./utils/logger');
 const basicAuth = require('./middleware/basic-auth');
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const usersRouter = require('./routes/v1/users');
 
 const app = express();
 
@@ -32,7 +32,9 @@ db.once('open', () => {
 
 // Assign routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
+// Version 1
+app.use('/v1/users', usersRouter);
 
 // Catch 404
 app.use((req, res) => res.status(404).send());
