@@ -6,8 +6,10 @@
 
 const http = require('http');
 const logger = require('../utils/logger');
+const { buildNumber } = require('../build-info');
 
 logger.info('----- JWT Server -----');
+logger.info(buildNumber);
 
 const app = require('../app');
 const { PORT } = require('../config');
@@ -32,7 +34,6 @@ const server = http.createServer(app);
 server.listen(port);
 
 server.on('error', (error) => {
-
   if (error.syscall !== 'listen') {
     throw error;
   }
