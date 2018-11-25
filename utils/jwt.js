@@ -21,9 +21,9 @@ class Jwt {
     });
   }
 
-  static async verifyAndDecode(token) {
+  static async verifyAndDecode(token, { audience = 'tidbytes.ca' } = {}) {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, secret, { algorithms: ['HS256'], issuer: 'tidbytes.ca' }, (err, decoded) => {
+      jwt.verify(token, secret, { algorithms: ['HS256'], issuer: 'tidbytes.ca', audience }, (err, decoded) => {
         if (err) {
           logger.error(`Error while validating JWT. Message: ${err.message}`);
           return reject(err);

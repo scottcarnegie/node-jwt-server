@@ -13,17 +13,25 @@ class UserController {
       });
     }
 
+    const { aud } = req.query;
+
     return User.create({ email, password })
       .then(async (user) => {
         if (!user) {
           return res.status(statusCodes.CONFLICT).send({});
         }
 
-        const token = await Jwt.generate({
+        const tokenDefinition = {
           payload: {
-            email: user.email,
+            email,
           },
-        });
+        };
+
+        if (aud) {
+          tokenDefinition.audience = aud;
+        }
+
+        const token = await Jwt.generate(tokenDefinition);
 
         return res.status(statusCodes.CREATED).send({ token });
       })
@@ -39,12 +47,19 @@ class UserController {
 
     const { username, password } = req.basic;
 
+    const tokenDefinition = {
+      payload: {
+        email: username,
+      },
+    };
+
+    const { aud } = req.query;
+    if (aud) {
+      tokenDefinition.audience = aud;
+    }
+
     if (await User.authenticate({ email: username, password })) {
-      const token = await Jwt.generate({
-        payload: {
-          email: username,
-        },
-      });
+      const token = await Jwt.generate(tokenDefinition);
       return res.status(statusCodes.OK).send({ token });
     }
     return res.status(statusCodes.NOT_FOUND).send();
@@ -60,8 +75,14 @@ class UserController {
     let decoded;
     let error;
 
+    const { aud } = req.query;
+
     try {
-      decoded = await Jwt.verifyAndDecode(req.query.token);
+      if (aud) {
+        decoded = await Jwt.verifyAndDecode(req.query.token, { audience: aud });
+      } else {
+        decoded = await Jwt.verifyAndDecode(req.query.token);
+      }
     } catch (err) {
       error = err;
     }
